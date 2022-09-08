@@ -1,0 +1,46 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "index"
+			}
+		},
+		{
+			"path": "pages/haotong/index",
+			"style": {
+				"navigationBarTitleText": "haotong"
+			}
+		},
+		{
+			"path": "pages/component/index",
+			"style": {
+				"navigationBarTitleText": "设置"
+			}
+		},
+		{
+			"path": "pages/xcka/index",
+			"style": {
+				"navigationBarTitleText": "行程卡"
+			}
+		},
+		{
+			"path": "pages/iaxy/index",
+			"style": {
+				"navigationBarTitleText": "查询"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationStyle": "custom",
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"dynamicRpx": true
+		// "rpxCalcMaxDeviceWidth":3000,
+		// "rpxCalcBaseDeviceWidth":360,
+		// "rpxCalcIncludeWidth":750
+
+	}
+}
