@@ -280,8 +280,8 @@
 		font-family: my-fontn;
 		margin-top: -1980rpx;
 		font-size: 28.5rpx;
-		color: rgba(0,0,0,0.72);
-		font-weight: 600;
+		color: black;
+		font-weight: 500;
 		letter-spacing: 1rpx;
 
 	}
@@ -300,7 +300,7 @@
 	.show2 .hetime {
 		font-family: my-fontm;
 		font-size: 50rpx;
-		margin-top: -15rpx;
+		margin-top: -10rpx;
 		color: #339D66;
 		font-weight: 450;
 
@@ -309,11 +309,10 @@
 
 	.show2 .cytime {
 		font-family: my-fontn;
-		font-size: 26rpx;
+		font-size: 27rpx;
 		margin-left: 56rpx;
-		margin-top: -10rpx;
-		letter-spacing: 1.5rpx;
-		color: rgba(0,0,0,0.72);
+		margin-top: -12rpx;
+		color: rgba(0,0,0,0.68);
 		font-weight: 600;
 	}
 
