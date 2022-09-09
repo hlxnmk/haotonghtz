@@ -28,14 +28,14 @@ export const useHaoTongStore = defineStore('haotong', {
 				},
 				{
 					value: dayjs().subtract(1, 'day').add(12, 'hour').add(27, 'minutes').format(
-						"最近采样: MM-DD HH:mm"),
+						"最近采样： MM-DD HH:mm"),
 					name: '24小时',
 					time: '24',
 					alg:dayjs().subtract(1, 'day').add(12, 'hour').add(27, 'minutes')
 				},
 				{
 					value: dayjs().subtract(2, 'day').subtract(6, 'hour').add(32, 'minutes').format(
-						"最近采样: MM-DD HH:mm"),
+						"最近采样： MM-DD HH:mm"),
 					time: '72',
 					name: '72小时',
 					alg:dayjs().subtract(2, 'day').subtract(6, 'hour').add(32, 'minutes')
@@ -62,7 +62,7 @@ export const useHaoTongStore = defineStore('haotong', {
 				let n = -state.tztime
 			cytime = cytime.subtract(n, 'hour')
 			}
-			return cytime.format("最近采样: MM-DD HH:mm")
+			return cytime.format("最近采样： MM-DD HH:mm")
 		},
 	},
 	actions: {
