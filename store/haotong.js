@@ -13,14 +13,14 @@ export const useHaoTongStore = defineStore('haotong', {
 			name: '小天猫',
 			card: '320111111111111111',
 			phone: '15211111111',
-			smtime: dayjs().format("扫码时间： YYYY年MM月DD日 HH:mm:ss"),
+			smtime: dayjs().format(" HH:mm:ss"),
 			xctime: dayjs().format("YYYY.MM.DD HH:mm:ss"),
 			today: dayjs().format("YYYY年MM月DD日"),
 			address: '通富微电',
 			current: 0,
 			tztime: 0,
 			items: [{
-					value: dayjs().subtract(1, 'day').add(3, 'hour').add(18, 'minutes').format("最近采样： MM-DD HH:mm"),
+					value: dayjs().subtract(1, 'day').add(3, 'hour').add(18, 'minutes').format(" MM-DD HH:mm"),
 					time: '48',
 					name: '48小时',
 					alg: dayjs().subtract(1, 'day').add(3, 'hour').add(18, 'minutes'),
@@ -28,14 +28,14 @@ export const useHaoTongStore = defineStore('haotong', {
 				},
 				{
 					value: dayjs().subtract(1, 'day').add(12, 'hour').add(27, 'minutes').format(
-						"最近采样： MM-DD HH:mm"),
+						" MM-DD HH:mm"),
 					name: '24小时',
 					time: '24',
 					alg:dayjs().subtract(1, 'day').add(12, 'hour').add(27, 'minutes')
 				},
 				{
 					value: dayjs().subtract(2, 'day').subtract(6, 'hour').add(32, 'minutes').format(
-						"最近采样： MM-DD HH:mm"),
+						" MM-DD HH:mm"),
 					time: '72',
 					name: '72小时',
 					alg:dayjs().subtract(2, 'day').subtract(6, 'hour').add(32, 'minutes')
@@ -62,7 +62,7 @@ export const useHaoTongStore = defineStore('haotong', {
 				let n = -state.tztime
 			cytime = cytime.subtract(n, 'hour')
 			}
-			return cytime.format("最近采样： MM-DD HH:mm")
+			return cytime.format(" MM-DD HH:mm")
 		},
 	},
 	actions: {
