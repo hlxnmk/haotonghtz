@@ -4,7 +4,7 @@
 		<view>
 			<image class="xyzeimg" src="/static/xyze.png"></image>
 			<text class="cancle" @click="isshow=false"> 取消</text>
-			<text class="ok"   @click =" haotong.goto('../iaxy/index')"> 允许</text>
+			<text class="ok" @click=" haotong.goto('../iaxy/index')"> 允许</text>
 		</view>
 
 	</view>
@@ -23,13 +23,14 @@
 		<text class="address"> {{haotong.address}}</text>
 		<navigator class="goto" url="../component/index" hover-class="navigator-hover" open-type="redirect">
 		</navigator>
+		<view class="smtime"><text class="smtime1">扫码时间：</text><text class="smtime2"> {{haotong.today}}</text><text
+				class="smtime3"> {{haotong.smtime}}</text></view>
 
-		<text class="smtime"> {{haotong.smtime}}</text>
 		<view class="show2">
 			<text class="hetime"> {{haotong.items[haotong.current].time}}</text>
-			<text class="cytime"> {{haotong.cytime}}</text>
+			<view class="cytime"><text class="cytime1">最近采样：</text><text class="cytime2"> {{haotong.cytime}}</text></view>
 		</view>
-		
+
 		<text class="xcka" @click="isshow=true">点击查看</text>
 
 
@@ -118,8 +119,6 @@
 			haotong.address = res.data
 		}
 	});
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -212,10 +211,10 @@
 	}
 
 	.left .name {
-		 font-weight: 700;
-		 color: rgba(0,0,0,0.72);
-		
-	
+		font-weight: 700;
+		color: rgba(0, 0, 0, 0.72);
+
+
 	}
 
 	.left .card {
@@ -235,7 +234,7 @@
 	}
 
 	.right .realtime {
-        font-family: my-fontm;
+		font-family: my-fontm;
 		margin-top: -18rpx;
 		letter-spacing: 1.5rpx;
 		font-weight: 500;
@@ -278,12 +277,24 @@
 
 	.haotong .smtime {
 		font-family: my-fontn;
-		margin-top: -1980rpx;
+		margin-top: -1982rpx;
 		font-size: 28.5rpx;
 		color: black;
 		font-weight: 500;
 		letter-spacing: 1rpx;
-
+	}
+	.smtime1{
+		margin-left: -2rpx;
+		font-size: 28.5rpx;
+	}
+	.smtime2{
+		font-size: 28.5rpx;
+		letter-spacing: 1.1rpx;
+	}
+	.smtime3{
+		font-size: 28.5rpx;
+		margin-left: 3rpx;
+		letter-spacing: 1.3rpx;
 	}
 
 	.haotong .show2 {
@@ -312,8 +323,11 @@
 		font-size: 27rpx;
 		margin-left: 56rpx;
 		margin-top: -12rpx;
-		color: rgba(0,0,0,0.68);
+		color: rgba(0, 0, 0, 0.68);
 		font-weight: 600;
+	}
+	.cytime2{
+		margin-left: -3rpx;
 	}
 
 	.xcka {
