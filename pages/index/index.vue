@@ -1,10 +1,8 @@
 <template>
 	<image class="haotongimg" src="/static/haotongindex.png"></image>
 
-	<view class="haotong" :style="{'height':phoneHeight+'rpx' ,'width':phoneWidth+'rpx'}">
+	<view class="haotong" >
 		<text class="goto" @click="haotongqr()"> </text>
-
-
 	</view>
 </template>
 
@@ -16,21 +14,7 @@
 				phoneWidth: 0, //屏幕高度
 			};
 		},
-		onLoad() {
-			// 获取屏幕高度
-			let self = this;
-			uni.getSystemInfo({
-				success(res) {
-					console.log(res.screenHeight); //屏幕高度  注意这里获得的高度宽度都是px 需要转换rpx
-					console.log(res.windowWidth); //可使用窗口宽度
-					console.log(res.windowHeight); //可使用窗口高度
-					console.log(res.screenWidth); //屏幕宽度
-					self.phoneHeight = (res.screenHeight * (750 / res.windowWidth)) //窗口高度，将px 转换rpx
-					self.phoneWidth = (res.screenWidth * (750 / res.windowWidth)) //窗口宽度，将px 转换rpx
-				}
-			});
 
-		},
 
 	};
 </script>
@@ -45,8 +29,8 @@
 	const haotong = useHaoTongStore()
 	const haotongqr = () => uni.scanCode({
 		success: function(res) {
-			console.log('条码类型：' + res.scanType);
-			console.log('条码内容：' + res.result);
+			// console.log('条码类型：' + res.scanType);
+			// console.log('条码内容：' + res.result);
 			
 			uni.setStorage({
 				key: 'address',
@@ -55,8 +39,8 @@
 			haotong.goto('../haotong/index')
 		},
 		fail: function(res) {
-			console.log('条码类型：' + res.scanType);
-			console.log('条码内容：' + res.result);
+			// console.log('条码类型：' + res.scanType);
+			// console.log('条码内容：' + res.result);
 			uni.setStorage({
 				key: 'address',
 				data: '通富微电',
@@ -68,8 +52,7 @@
 </script>
 
 <style lang="scss" scoped>
-	$allheight:v-bind(phoneHeight);
-	$allwidth:v-bind(phoneWidth);
+	
 
 	.haotongimg {
 		position: absolute;
@@ -85,19 +68,14 @@
 	}
 
 	.haotong {
-
-		width: calc($allwidth*1rpx);
+        height: 1500rpx;
+		width: 750rpx;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-around;
 		align-items: center;
 	}
 
-
-	navigator {
-		margin: 0;
-		padding: 0;
-	}
 
 	.goto {
 		position: absolute;

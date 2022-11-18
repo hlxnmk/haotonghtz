@@ -27,8 +27,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 23.4375rem;
+  height: 46.875rem;
   z-index: -1;
 }
 uni-text[data-v-81c56538] {
@@ -43,8 +43,8 @@ uni-text[data-v-81c56538] {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 2;
-  background-color: rgba(128, 128, 128, 0.6);
+  z-index: 4;
+  background-color: rgba(128, 128, 128, 0.4);
 }
 .xyzeimg[data-v-81c56538] {
   width: 20.9375rem;
@@ -70,113 +70,188 @@ uni-text[data-v-81c56538] {
   left: 13.4375rem;
   color: rgba(0, 0, 0, 0);
 }
+.gotowx[data-v-81c56538] {
+  background-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0.0625rem 0.0625rem rgba(234, 234, 234, 0.95);
+  z-index: 3;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  right: 0.625rem;
+  top: 2.375rem;
+  width: 5.4375rem;
+  height: 1.75rem;
+  border-radius: 0.875rem;
+}
+.wximg[data-v-81c56538] {
+  width: 4.03125rem;
+  height: 1.28125rem;
+  margin-top: 0.1875rem;
+  margin-left: -0.125rem;
+}
+.gotohe[data-v-81c56538] {
+  background-color: white;
+  border: 0.03125rem solid #85D1FA;
+  border-radius: 50%;
+  z-index: 3;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  right: 1rem;
+  top: 19.84375rem;
+  width: 3.1875rem;
+  height: 3.1875rem;
+}
+.heimg[data-v-81c56538] {
+  border-radius: 50%;
+  box-shadow: 0 0 0.09375rem 0.09375rem rgba(181, 209, 250, 0.7);
+  width: 3.1875rem;
+  height: 3.1875rem;
+}
+.gotohome[data-v-81c56538] {
+  border-radius: 50%;
+  z-index: 3;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  right: 0.96875rem;
+  top: 24.03125rem;
+  width: 3.25rem;
+  height: 3.25rem;
+}
+.homeimg[data-v-81c56538] {
+  background-color: #2D70E5;
+  border-radius: 50%;
+  box-shadow: 0 0 0.09375rem 0.09375rem rgba(45, 112, 229, 0.5);
+  width: 3.1875rem;
+  height: 3.1875rem;
+}
 .haotong[data-v-81c56538] {
-  width: calc(var(--81c56538-phoneWidth) * 0.03125rem);
+  width: 23.4375rem;
+  height: 46.875rem;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
 }
 .show1[data-v-81c56538] {
-  width: calc(var(--81c56538-phoneWidth) * 0.03125rem);
+  width: 23.4375rem;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: flex-start;
-  margin-top: -7.125rem;
+  margin-top: 6.375rem;
 }
-.show1 .left[data-v-81c56538] {
+.left[data-v-81c56538] {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
-.left .name[data-v-81c56538] {
+.name[data-v-81c56538] {
+  font-family: my-fontn;
   font-weight: 700;
   color: rgba(0, 0, 0, 0.72);
 }
-.left .card[data-v-81c56538] {
+.card[data-v-81c56538] {
   font-family: my-fontm;
-  padding-top: 0.75rem;
+  padding-top: 0.71875rem;
+  margin-top: -0.0625rem;
   font-size: 1rem;
   letter-spacing: 0.05625rem;
   color: #666666;
 }
-.show1 .right[data-v-81c56538] {
+.right[data-v-81c56538] {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-left: -2rem;
+  margin-left: -2.0625rem;
 }
-.right .realtime[data-v-81c56538] {
+.realtime[data-v-81c56538] {
   font-family: my-fontm;
-  margin-top: -0.5625rem;
+  margin-top: -0.4375rem;
+  margin-left: 0.09375rem;
   letter-spacing: 0.04688rem;
   font-weight: 500;
-  font-size: 1.875rem;
+  font-size: 1.8125rem;
   color: #303133;
 }
-.right .today[data-v-81c56538] {
+.today[data-v-81c56538] {
   font-family: my-fontm;
   font-size: 1rem;
   letter-spacing: 0.04688rem;
   color: #666666;
 }
-.haotong .address[data-v-81c56538] {
-  margin-top: -22.03125rem;
+.address[data-v-81c56538] {
+  margin-top: 8.5625rem;
   color: #303133;
   letter-spacing: 0.04688rem;
 }
-uni-navigator[data-v-81c56538] {
-  margin: 0;
-  padding: 0;
-}
-.goto[data-v-81c56538] {
-  position: absolute;
-  right: 1.25rem;
-  margin-top: -33.75rem;
-  height: 2.5rem;
-  width: 2.5rem;
-  align-self: end;
-}
-.haotong .smtime[data-v-81c56538] {
+.smtime[data-v-81c56538] {
   font-family: my-fontn;
-  margin-top: -61.875rem;
   font-size: 0.89063rem;
-  color: rgba(0, 0, 0, 0.72);
-  font-weight: 600;
+  color: black;
+  font-weight: 500;
   letter-spacing: 0.03125rem;
+  margin-top: 1.5625rem;
 }
-.haotong .show2[data-v-81c56538] {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  margin-top: 10.5rem;
-  margin-left: 4.375rem;
+.smtime1[data-v-81c56538] {
+  margin-left: -0.0625rem;
+  font-size: 0.89063rem;
 }
-.show2 .hetime[data-v-81c56538] {
+.smtime2[data-v-81c56538] {
+  font-size: 0.89063rem;
+  letter-spacing: 0.03438rem;
+}
+.smtime3[data-v-81c56538] {
+  font-size: 0.89063rem;
+  margin-left: 0.09375rem;
+  letter-spacing: 0.04063rem;
+}
+.show2[data-v-81c56538] {
+  height: 2.4375rem;
+  margin-top: -0.59375rem;
+  margin-left: -4.375rem;
+}
+.cyday[data-v-81c56538] {
+  font-size: 1.5rem;
+  font-family: my-fontm;
+  font-weight: 600;
+  color: #000;
+}
+.cytime[data-v-81c56538] {
+  font-family: my-fontm;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #888888;
+  margin-left: 0.3125rem;
+}
+.hetime[data-v-81c56538] {
   font-family: my-fontm;
   font-size: 1.5625rem;
-  margin-top: -0.46875rem;
   color: #339D66;
-  font-weight: 450;
-}
-.show2 .cytime[data-v-81c56538] {
-  font-family: my-fontn;
-  font-size: 0.8125rem;
-  margin-left: 1.75rem;
-  margin-top: -0.3125rem;
-  letter-spacing: 0.04688rem;
-  color: rgba(0, 0, 0, 0.72);
   font-weight: 600;
+  margin-left: 4.6875rem;
+  line-height: 1.875rem;
+}
+.htz[data-v-81c56538] {
+  width: 9.375rem;
+  height: 3.75rem;
+  margin-left: 10.3125rem;
 }
 .xcka[data-v-81c56538] {
-  font-family: my-fontm;
-  position: absolute;
-  font-size: 1.5rem;
-  color: #808080;
-  margin-top: 16.125rem;
-  margin-left: -5.3125rem;
-  font-weight: 400;
-  letter-spacing: 0.025rem;
+  width: 9.375rem;
+  height: 4.6875rem;
+  margin-left: -10.3125rem;
+}
+.sw2[data-v-81c56538] {
+  height: 14.125rem;
+  width: 23.4375rem;
+  background-color: #339D66;
+}
+.sw2img[data-v-81c56538] {
+  height: 13.6875rem;
+  width: 23.4375rem;
 }

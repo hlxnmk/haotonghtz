@@ -8,36 +8,8 @@
 	</view>
 
 </template>
-
-<script>
-	import dayjs from "dayjs";
-	export default {
-		data() {
-			return {
-				phoneHeight: 0, //屏幕高度
-				phoneWidth: 0, //屏幕高度
-			};
-		},
-		onLoad() {
-			// 获取屏幕高度
-			let self = this;
-			uni.getSystemInfo({
-				success(res) {
-					console.log(res.screenHeight); //屏幕高度  注意这里获得的高度宽度都是px 需要转换rpx
-					console.log(res.windowWidth); //可使用窗口宽度
-					console.log(res.windowHeight); //可使用窗口高度
-					console.log(res.screenWidth); //屏幕宽度
-					self.phoneHeight = (res.screenHeight * (750 / res.windowWidth)) //窗口高度，将px 转换rpx
-					self.phoneWidth = (res.screenWidth * (750 / res.windowWidth)) //窗口宽度，将px 转换rpx
-				}
-			});
-
-		},
-	
-	};
-</script>
-
 <script setup>
+	import dayjs from "dayjs"
 	import {
 		useHaoTongStore
 	} from '@/store/haotong.js'
@@ -48,9 +20,6 @@
 </script>
 
 <style lang="scss" scoped> 
-	$allheight:v-bind(phoneHeight);
-	$allwidth:v-bind(phoneWidth);
-	
 	.iaxyimg{
 		position: absolute;
 		top: 0;
@@ -68,9 +37,7 @@
 		display: flex;
 		justify-content: center;
 		justify-items: center;
-		flex-direction: column;
-		
-		
+		flex-direction: column;		
 	}
 	.phone{
 		margin-top: 858rpx;
@@ -91,14 +58,14 @@
 	.ok{
 		
 		position: absolute;
-		margin-top: 375rpx;
+		margin-top: 378rpx;
 		margin-left: 78rpx;
 		width: 80rpx;
 		height: 80rpx;
 		
 	}
 	.cx{
-		margin-top: 150rpx;
+		margin-top: 130rpx;
 		margin-left: 62rpx;
 		width: 630rpx;
 		height: 140rpx;

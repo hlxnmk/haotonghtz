@@ -35,15 +35,12 @@ uni-text[data-v-57280228] {
   z-index: 1;
 }
 .haotong[data-v-57280228] {
-  width: calc(var(--57280228-phoneWidth) * 0.03125rem);
+  height: 46.875rem;
+  width: 23.4375rem;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-}
-uni-navigator[data-v-57280228] {
-  margin: 0;
-  padding: 0;
 }
 .goto[data-v-57280228] {
   position: absolute;

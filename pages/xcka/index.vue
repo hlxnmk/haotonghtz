@@ -1,53 +1,22 @@
 <template>
 	<image src="/static/xckaps.png"></image>
-	<view class="xcka" :style="{'height':phoneHeight+'rpx' ,'width':phoneWidth+'rpx'}">
-	
+	<view class="xcka" >
         <view class="xcphone">
 			<text> {{haotong.formatPhoneNumber}}</text>
 		<text class="phonetext" >的动态行程卡</text>
 		
 		</view>
 		<view class="xctime">
-		<text class="xcs"> 更新于: </text>
+		<text class="xcs"> 更新于： </text>
 		<text class="xct"> {{haotong.xctime}}</text>
 		</view>
 		<image class="xcicon " src="/static/xcicon.png"></image>
-		
-		
- 
 
 	</view>
 </template>
 
-<script>
-	import dayjs from "dayjs";
-	export default {
-		data() {
-			return {
-				phoneHeight: 0, //屏幕高度
-				phoneWidth: 0, //屏幕高度
-			};
-		},
-		onLoad() {
-			// 获取屏幕高度
-			let self = this;
-			uni.getSystemInfo({
-				success(res) {
-					console.log(res.screenHeight); //屏幕高度  注意这里获得的高度宽度都是px 需要转换rpx
-					console.log(res.windowWidth); //可使用窗口宽度
-					console.log(res.windowHeight); //可使用窗口高度
-					console.log(res.screenWidth); //屏幕宽度
-					self.phoneHeight = (res.screenHeight * (750 / res.windowWidth)) //窗口高度，将px 转换rpx
-					self.phoneWidth = (res.screenWidth * (750 / res.windowWidth)) //窗口宽度，将px 转换rpx
-				}
-			});
-
-		},
-	
-	};
-</script>
-
 <script setup>
+	import dayjs from "dayjs"
 	import {
 		useHaoTongStore
 	} from '@/store/haotong.js'
@@ -57,8 +26,6 @@
 </script>
 
 <style lang="scss" scoped> 
-	$allheight:v-bind(phoneHeight);
-	$allwidth:v-bind(phoneWidth);
 	
 	image {
 		position: absolute;
@@ -74,6 +41,8 @@
 		font-family: my-fontm;
 	}
 	.xcka{
+		width: 750rpx;
+		height: 1500rpx;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-around;

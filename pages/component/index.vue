@@ -1,6 +1,6 @@
 <template>
 	<view class="uni-common-mt">
-		<view class="uni-form-item uni-column title">{{text}}</view>
+		<view class="uni-form-item uni-column title h">个人核酸信息输入</view>
 		<view class="uni-form-item uni-column">
 			<view class="title">姓名:{{haotong.name}}</view>
 			<input class="uni-input" @input="haotong.setname" placeholder="请输入你的名字" />
@@ -31,9 +31,9 @@
 			</radio-group>
 		</view>
 		<view class=" uni-form-item uni-column">
-			<view class="title">{{haotong.cytime}}</view>
-			<view class="cytime"><text>采样时间微调:</text><button @click="n++">+</button><button @click="n--">-</button><text
-					class="n"> {{n}}</text> 小时</view>
+			<view class="title cy">采样时间：{{haotong.cyday}} {{haotong.cytime}}</view>
+			<view class="cytime">采样时间微调:<button @click="n++">+</button><button @click="n--">-</button><text class="n">
+					{{n}}</text> 小时</view>
 		</view>
 
 		<view class="uni-form-item ">
@@ -53,17 +53,15 @@
 	import {
 		storeToRefs
 	} from 'pinia'
+	import {
+		ref
+	} from 'vue'
 	const haotong = useHaoTongStore()
 	const {
-		text,
 		current,
 		tztime,
 		cytime
 	} = storeToRefs(haotong) //设置响应式
-	setInterval(() => haotong.get_Hitokoto(), 20000) //比settimeout好用
-	import {
-		ref
-	} from 'vue'
 	const n = ref(0)
 	haotong.tztime = n
 </script>
@@ -78,7 +76,16 @@
 		display: flex;
 		color: #339D66;
 	}
+	.uni-input{
+		background-color: #F8F8F8;
+	}
 
+	.cy {
+		font-size: 34rpx;
+	}
+    .h{
+		margin-top: 40rpx;
+	}
 	.n {
 		font-size: 42rpx;
 	}

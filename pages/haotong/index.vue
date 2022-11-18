@@ -1,40 +1,55 @@
 <template>
-	<image class="haotongimg" src="/static/haotongnewps.png"></image>
 	<view v-show="isshow" class="xyze">
 		<view>
 			<image class="xyzeimg" src="/static/xyze.png"></image>
 			<text class="cancle" @click="isshow=false"> 取消</text>
 			<text class="ok" @click=" haotong.goto('../iaxy/index')"> 允许</text>
 		</view>
-
 	</view>
 
-	<view class="haotong" :style="{'height':phoneHeight+'rpx' ,'width':phoneWidth+'rpx'}">
-		<view class="show1">
-			<view class="left">
-				<text class="name"> {{haotong.name}}</text>
-				<text class="card"> {{haotong.card}}</text>
+	<scroll-view scroll-y="true" class="scroll-Y">
+		<view class="haotong">
+			<image class="haotongimg" src="/static/haotonghtzps.png"></image>
+			<view class="gotowx" @click=" haotong.goto('../index/index')">
+				<image class="wximg" src="/static/wx.png"></image>
 			</view>
-			<view class="right">
-				<text class="realtime"> {{realtime}}</text>
-				<text class="today"> {{haotong.today}}</text>
+			<view class="gotohe" @click=" haotong.goto('../heinfo/index')">
+				<image class="heimg" src="/static/he.png"></image>
 			</view>
+			<view class="gotohome" @click=" haotong.goto('../component/index')">
+				<image class="homeimg" src="/static/home.png"></image>
+			</view>
+
+			<view class="show1">
+				<view class="left">
+					<text class="name"> {{haotong.name}}</text>
+					<text class="card"> {{haotong.card}}</text>
+				</view>
+				<view class="right">
+					<text class="realtime"> {{realtime}}</text>
+					<text class="today"> {{haotong.today}}</text>
+				</view>
+			</view>
+			<text class="address"> {{haotong.address}}</text>
+			<view class="smtime"><text class="smtime1">扫码时间：</text><text class="smtime2"> {{haotong.today}}</text><text
+					class="smtime3"> {{haotong.smtime}}</text></view>
+
+			<view class="show2">
+				<view class="cytime"><text class="cyday"> {{haotong.cyday}}</text><text class="cytime">
+						{{haotong.cytime}}</text><text class="hetime"> {{haotong.items[haotong.current].time}}</text>
+				</view>
+
+			</view>
+			<view class="htz"  @click=" haotong.goto('../htz/index')"> </view>
+			<view class="xcka" @click="isshow=true"> </view>
+
 		</view>
-		<text class="address"> {{haotong.address}}</text>
-		<navigator class="goto" url="../component/index" hover-class="navigator-hover" open-type="redirect">
-		</navigator>
-		<view class="smtime"><text class="smtime1">扫码时间：</text><text class="smtime2"> {{haotong.today}}</text><text
-				class="smtime3"> {{haotong.smtime}}</text></view>
-
-		<view class="show2">
-			<text class="hetime"> {{haotong.items[haotong.current].time}}</text>
-			<view class="cytime"><text class="cytime1">最近采样：</text><text class="cytime2"> {{haotong.cytime}}</text></view>
+		<view class="sw2" @click=" haotong.goto('../xpyi/index')">
+			<image class="sw2img" src="/static/sw2.png"></image>
 		</view>
 
-		<text class="xcka" @click="isshow=true">点击查看</text>
+	</scroll-view>
 
-
-	</view>
 </template>
 
 <script>
@@ -44,24 +59,7 @@
 			return {
 				realtime: null,
 				timer: null,
-				phoneHeight: 0, //屏幕高度
-				phoneWidth: 0, //屏幕高度
 			};
-		},
-		onLoad() {
-			// 获取屏幕高度
-			let self = this;
-			uni.getSystemInfo({
-				success(res) {
-					console.log(res.screenHeight); //屏幕高度  注意这里获得的高度宽度都是px 需要转换rpx
-					console.log(res.windowWidth); //可使用窗口宽度
-					console.log(res.windowHeight); //可使用窗口高度
-					console.log(res.screenWidth); //屏幕宽度
-					self.phoneHeight = (res.screenHeight * (750 / res.windowWidth)) //窗口高度，将px 转换rpx
-					self.phoneWidth = (res.screenWidth * (750 / res.windowWidth)) //窗口宽度，将px 转换rpx
-				}
-			});
-
 		},
 		mounted() {
 			this.timer = setInterval(() => {
@@ -122,15 +120,12 @@
 </script>
 
 <style lang="scss" scoped>
-	$allheight:v-bind(phoneHeight);
-	$allwidth:v-bind(phoneWidth);
-
 	.haotongimg {
 		position: absolute;
 		top: 0;
 		left: 0;
-		width: 100%;
-		height: 100%;
+		width: 750rpx;
+		height: 1500rpx;
 		z-index: -1;
 	}
 
@@ -147,8 +142,8 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
-		z-index: 2;
-		background-color: rgba(128, 128, 128, 0.6);
+		z-index: 4;
+		background-color: rgba(128, 128, 128, 0.4);
 
 	}
 
@@ -184,9 +179,81 @@
 
 	}
 
+
+	.gotowx {
+		background-color: rgba(255, 255, 255, 0.6);
+		box-shadow: 0 0 2rpx 2rpx rgba(234, 234, 234, 0.95);
+		z-index: 3;
+		position: fixed;
+		display: flex;
+		justify-content: center;
+		justify-items: center;
+		right: 20rpx;
+		top: 76rpx;
+		width: 174rpx;
+		height: 56rpx;
+		border-radius: 28rpx;
+
+	}
+
+	.wximg {
+		width: 129rpx;
+		height: 41rpx;
+		margin-top: 6rpx;
+		margin-left: -4rpx;
+	}
+
+	.gotohe {
+		background-color: white;
+		border: 1rpx solid #85D1FA;
+		border-radius: 50%;
+		z-index: 3;
+		position: fixed;
+		display: flex;
+		justify-content: center;
+		justify-items: center;
+		right: 32rpx;
+		top: 635rpx;
+		width: 102rpx;
+		height: 102rpx;
+	}
+
+	.heimg {
+		border-radius: 50%;
+		box-shadow: 0 0 3rpx 3rpx rgba(181, 209, 250, 0.7);
+		width: 102rpx;
+		height: 102rpx;
+	}
+
+	.gotohome {
+
+		border-radius: 50%;
+		z-index: 3;
+		position: fixed;
+		display: flex;
+		justify-content: center;
+		justify-items: center;
+		right: 31rpx;
+		top: 769rpx;
+		width: 104rpx;
+		height: 104rpx;
+		
+
+	}
+
+	.homeimg {
+		background-color: #2D70E5;
+		border-radius: 50%;
+		box-shadow: 0 0 3rpx 3rpx rgba(45, 112, 229, 0.5);
+		width: 102rpx;
+		height: 102rpx;
+
+	}
+
 	.haotong {
 
-		width: calc($allwidth*1rpx);
+		width: 750rpx;
+		height: 1500rpx;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-around;
@@ -194,153 +261,149 @@
 	}
 
 	.show1 {
-		width: calc($allwidth*1rpx);
+		width: 750rpx;
 		display: flex;
 		flex-direction: row;
 		justify-content: space-around;
 		align-items: flex-start;
-		margin-top: -228rpx;
+		margin-top: 204rpx;
+
 
 	}
 
-	.show1 .left {
+	.left {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-
 	}
 
-	.left .name {
+	.name {
+		font-family: my-fontn;
 		font-weight: 700;
 		color: rgba(0, 0, 0, 0.72);
-
-
 	}
 
-	.left .card {
+	.card {
 		font-family: my-fontm;
-		padding-top: 24rpx;
+		padding-top: 23rpx;
+		margin-top: -2rpx;
 		font-size: 32rpx;
 		letter-spacing: 1.8rpx;
 		color: #666666;
 	}
 
-	.show1 .right {
+	.right {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		margin-left: -64rpx;
-
+		margin-left: -66rpx;
 	}
 
-	.right .realtime {
+
+	.realtime {
 		font-family: my-fontm;
-		margin-top: -18rpx;
+		margin-top: -14rpx;
+		margin-left: 3rpx;
 		letter-spacing: 1.5rpx;
 		font-weight: 500;
-		font-size: 60rpx;
+		font-size: 58rpx;
 		color: #303133;
 	}
 
-	.right .today {
+	.today {
 		font-family: my-fontm;
 		font-size: 32rpx;
 		letter-spacing: 1.5rpx;
 		color: #666666;
+		
 	}
 
-	.haotong .address {
-		margin-top: -705rpx;
+	.address {
+		margin-top: 274rpx;
 		color: #303133;
 		letter-spacing: 1.5rpx;
-
-
-
 	}
 
-	navigator {
-		margin: 0;
-		padding: 0;
-
-	}
-
-	.goto {
-		position: absolute;
-		right: 40rpx;
-		margin-top: -1080rpx;
-		height: 80rpx;
-		width: 80rpx;
-		align-self: end;
-		// background-color: aqua;
-
-	}
-
-	.haotong .smtime {
+	.smtime {
 		font-family: my-fontn;
-		margin-top: -1982rpx;
 		font-size: 28.5rpx;
 		color: black;
 		font-weight: 500;
 		letter-spacing: 1rpx;
+		margin-top: 50rpx;
 	}
-	.smtime1{
+
+	.smtime1 {
 		margin-left: -2rpx;
 		font-size: 28.5rpx;
 	}
-	.smtime2{
+
+	.smtime2 {
 		font-size: 28.5rpx;
 		letter-spacing: 1.1rpx;
 	}
-	.smtime3{
+
+	.smtime3 {
 		font-size: 28.5rpx;
 		margin-left: 3rpx;
 		letter-spacing: 1.3rpx;
 	}
-
-	.haotong .show2 {
-		position: absolute;
-		display: flex;
-		align-items: center;
-		flex-direction: column;
-		margin-top: 336rpx;
-		margin-left: 140rpx;
-
-
+    
+	.show2{
+		height: 78rpx;
+		margin-top: -19rpx;
+		margin-left: -140rpx;
+		
+	
+    }
+	.cyday{
+		font-size: 48rpx;
+		font-family: my-fontm;
+		font-weight: 600;
+		color: #000;
+		
+	}
+	.cytime {
+		font-family: my-fontm;
+		font-size: 48rpx;
+		font-weight: 600;
+		color: #888888;
+		margin-left: 10rpx;
 	}
 
-	.show2 .hetime {
+	.hetime {
 		font-family: my-fontm;
 		font-size: 50rpx;
-		margin-top: -10rpx;
 		color: #339D66;
-		font-weight: 450;
-
-
-	}
-
-	.show2 .cytime {
-		font-family: my-fontn;
-		font-size: 27rpx;
-		margin-left: 56rpx;
-		margin-top: -12rpx;
-		color: rgba(0, 0, 0, 0.68);
 		font-weight: 600;
+		margin-left: 150rpx;
+		line-height:60rpx ;
 	}
-	.cytime2{
-		margin-left: -3rpx;
+
+    .htz{
+		width: 300rpx;
+		height: 120rpx;
+		// background-color: #586C96;
+		margin-left: 330rpx;
 	}
 
 	.xcka {
-		font-family: my-fontm;
-		position: absolute;
-		font-size: 48rpx;
-		color: #808080;
-		margin-top: 516rpx;
-		margin-left: -170rpx;
-		font-weight: 400;
-		letter-spacing: 0.8rpx;
+		width: 300rpx;
+		height: 150rpx;
+		margin-left: -330rpx;
+		// background-color: skyblue;
+	}
 
+	.sw2 {
+		height: 452rpx;
+		width: 750rpx;
+		background-color: #339D66;
+	}
 
+	.sw2img {
+
+		height: 438rpx;
+		width: 750rpx;
 
 	}
 </style>

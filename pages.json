@@ -25,6 +25,48 @@
 			}
 		},
 		{
+			"path": "pages/xpyi/index",
+			"style": {
+				"navigationBarTitleText": "协议"
+			}
+		},
+		{
+			"path": "pages/heinfo/index",
+			"style": {
+				"navigationBarTitleText": "核酸信息"
+			}
+		},
+		{
+			"path": "pages/htz/index",
+			"style": {
+				"navigationBarTitleText": "好通证"
+			}
+		},
+		{
+			"path": "pages/cym/index",
+			"style": {
+				"navigationBarTitleText": "采样码"
+			}
+		},
+		{
+			"path": "pages/heresult/index",
+			"style": {
+				"navigationBarTitleText": "核酸结果"
+			}
+		},
+		{
+			"path": "pages/hereportz/index",
+			"style": {
+				"navigationBarTitleText": "核酸报告z"
+			}
+		},
+		{
+			"path": "pages/hereportr/index",
+			"style": {
+				"navigationBarTitleText": "核酸报告r"
+			}
+		},
+		{
 			"path": "pages/iaxy/index",
 			"style": {
 				"navigationBarTitleText": "查询"

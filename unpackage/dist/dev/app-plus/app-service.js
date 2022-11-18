@@ -42,54 +42,8 @@ if (typeof uni !== "undefined" && uni && uni.requireGlobal) {
 if (uni.restoreGlobal) {
   uni.restoreGlobal(Vue, weex, plus, setTimeout, clearTimeout, setInterval, clearInterval);
 }
-(function(shared, vue) {
+(function(vue) {
   "use strict";
-  function isDebugMode() {
-    return typeof __channelId__ === "string" && __channelId__;
-  }
-  function jsonStringifyReplacer(k, p) {
-    switch (shared.toRawType(p)) {
-      case "Function":
-        return "function() { [native code] }";
-      default:
-        return p;
-    }
-  }
-  function normalizeLog(type, filename, args) {
-    if (isDebugMode()) {
-      args.push(filename.replace("at ", "uni-app:///"));
-      return console[type].apply(console, args);
-    }
-    const msgs = args.map(function(v) {
-      const type2 = shared.toTypeString(v).toLowerCase();
-      if (["[object object]", "[object array]", "[object module]"].indexOf(type2) !== -1) {
-        try {
-          v = "---BEGIN:JSON---" + JSON.stringify(v, jsonStringifyReplacer) + "---END:JSON---";
-        } catch (e) {
-          v = type2;
-        }
-      } else {
-        if (v === null) {
-          v = "---NULL---";
-        } else if (v === void 0) {
-          v = "---UNDEFINED---";
-        } else {
-          const vType = shared.toRawType(v).toUpperCase();
-          if (vType === "NUMBER" || vType === "BOOLEAN") {
-            v = "---BEGIN:" + vType + "---" + v + "---END:" + vType + "---";
-          } else {
-            v = String(v);
-          }
-        }
-      }
-      return v;
-    });
-    return msgs.join("---COMMA---") + " " + filename;
-  }
-  function formatAppLog(type, filename, ...args) {
-    const res = normalizeLog(type, filename, args);
-    res && console[type](res);
-  }
   var isVue2 = false;
   function set(target, key, val) {
     if (Array.isArray(target)) {
@@ -2395,6 +2349,13 @@ This will fail in production.`);
     });
     return config;
   };
+  function formatAppLog(type, filename, ...args) {
+    if (uni.__log__) {
+      uni.__log__(type, filename, ...args);
+    } else {
+      console[type].apply(console, [...args, filename]);
+    }
+  }
   var data = {
     "version": "0.27.2"
   };
@@ -2891,31 +2852,32 @@ This will fail in production.`);
         name: "\u5C0F\u5929\u732B",
         card: "320111111111111111",
         phone: "15211111111",
-        smtime: dayjs().format("\u626B\u7801\u65F6\u95F4\uFF1A YYYY\u5E74MM\u6708DD\u65E5 HH:mm:ss"),
+        smtime: dayjs().format(" HH:mm:ss"),
         xctime: dayjs().format("YYYY.MM.DD HH:mm:ss"),
+        cymtime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         today: dayjs().format("YYYY\u5E74MM\u6708DD\u65E5"),
         address: "\u901A\u5BCC\u5FAE\u7535",
         current: 0,
         tztime: 0,
         items: [
           {
-            value: dayjs().subtract(1, "day").add(3, "hour").add(18, "minutes").format("\u6700\u8FD1\u91C7\u6837\uFF1A MM-DD HH:mm"),
+            value: dayjs().subtract(1, "day").subtract(1, "hour").subtract(5, "minutes").format(" MM-DD HH:mm"),
             time: "48",
             name: "48\u5C0F\u65F6",
-            alg: dayjs().subtract(1, "day").add(3, "hour").add(18, "minutes"),
+            alg: dayjs().subtract(1, "day").subtract(1, "hour").subtract(5, "minutes"),
             checked: "true"
           },
           {
-            value: dayjs().subtract(1, "day").add(12, "hour").add(27, "minutes").format("\u6700\u8FD1\u91C7\u6837: MM-DD HH:mm"),
+            value: dayjs().subtract(1, "day").add(1, "hour").add(5, "minutes").format(" MM-DD HH:mm"),
             name: "24\u5C0F\u65F6",
             time: "24",
-            alg: dayjs().subtract(1, "day").add(12, "hour").add(27, "minutes")
+            alg: dayjs().subtract(1, "day").add(1, "hour").add(5, "minutes")
           },
           {
-            value: dayjs().subtract(2, "day").subtract(6, "hour").add(32, "minutes").format("\u6700\u8FD1\u91C7\u6837: MM-DD HH:mm"),
+            value: dayjs().subtract(2, "day").subtract(2, "hour").add(10, "minutes").format(" MM-DD HH:mm"),
             time: "72",
             name: "72\u5C0F\u65F6",
-            alg: dayjs().subtract(2, "day").subtract(6, "hour").add(32, "minutes")
+            alg: dayjs().subtract(2, "day").subtract(2, "hour").add(10, "minutes")
           }
         ]
       };
@@ -2937,7 +2899,17 @@ This will fail in production.`);
           let n = -state.tztime;
           cytime = cytime.subtract(n, "hour");
         }
-        return cytime.format("\u6700\u8FD1\u91C7\u6837: MM-DD HH:mm");
+        return cytime.format("HH:mm");
+      },
+      cyday: (state) => {
+        let cytime = state.items[state.current].alg;
+        if (state.tztime > 0) {
+          cytime = cytime.add(state.tztime, "hour");
+        } else if (state.tztime < 0) {
+          let n = -state.tztime;
+          cytime = cytime.subtract(n, "hour");
+        }
+        return cytime.format("MM-DD");
       }
     },
     actions: {
@@ -3002,39 +2974,20 @@ This will fail in production.`);
     }
     return target;
   };
-  const __default__$3 = {
+  const __default__$1 = {
     data() {
       return {
         phoneHeight: 0,
         phoneWidth: 0
       };
-    },
-    onLoad() {
-      let self2 = this;
-      uni.getSystemInfo({
-        success(res) {
-          formatAppLog("log", "at pages/index/index.vue:24", res.screenHeight);
-          formatAppLog("log", "at pages/index/index.vue:25", res.windowWidth);
-          formatAppLog("log", "at pages/index/index.vue:26", res.windowHeight);
-          formatAppLog("log", "at pages/index/index.vue:27", res.screenWidth);
-          self2.phoneHeight = res.screenHeight * (750 / res.windowWidth);
-          self2.phoneWidth = res.screenWidth * (750 / res.windowWidth);
-        }
-      });
     }
   };
-  const _sfc_main$5 = /* @__PURE__ */ Object.assign(__default__$3, {
+  const _sfc_main$c = /* @__PURE__ */ Object.assign(__default__$1, {
     __name: "index",
     setup(__props) {
-      vue.useCssVars((_ctx) => ({
-        "57280228-phoneHeight": _ctx.phoneHeight,
-        "57280228-phoneWidth": _ctx.phoneWidth
-      }));
       const haotong = useHaoTongStore();
       const haotongqr = () => uni.scanCode({
         success: function(res) {
-          formatAppLog("log", "at pages/index/index.vue:48", "\u6761\u7801\u7C7B\u578B\uFF1A" + res.scanType);
-          formatAppLog("log", "at pages/index/index.vue:49", "\u6761\u7801\u5185\u5BB9\uFF1A" + res.result);
           uni.setStorage({
             key: "address",
             data: res.result.match(/[\u4e00-\u9fa5]/g).join("")
@@ -3042,8 +2995,6 @@ This will fail in production.`);
           haotong.goto("../haotong/index");
         },
         fail: function(res) {
-          formatAppLog("log", "at pages/index/index.vue:58", "\u6761\u7801\u7C7B\u578B\uFF1A" + res.scanType);
-          formatAppLog("log", "at pages/index/index.vue:59", "\u6761\u7801\u5185\u5BB9\uFF1A" + res.result);
           uni.setStorage({
             key: "address",
             data: "\u901A\u5BCC\u5FAE\u7535"
@@ -3057,41 +3008,23 @@ This will fail in production.`);
             class: "haotongimg",
             src: "/static/haotongindex.png"
           }),
-          vue.createElementVNode("view", {
-            class: "haotong",
-            style: vue.normalizeStyle({ "height": _ctx.phoneHeight + "rpx", "width": _ctx.phoneWidth + "rpx" })
-          }, [
+          vue.createElementVNode("view", { class: "haotong" }, [
             vue.createElementVNode("text", {
               class: "goto",
               onClick: _cache[0] || (_cache[0] = ($event) => haotongqr())
             })
-          ], 4)
+          ])
         ], 64);
       };
     }
   });
-  var PagesIndexIndex = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["__scopeId", "data-v-57280228"], ["__file", "D:/kkmk/UniApp/haotongqr/pages/index/index.vue"]]);
-  const __default__$2 = {
+  var PagesIndexIndex = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["__scopeId", "data-v-57280228"], ["__file", "D:/Program/UniApp/haotonghtz/pages/index/index.vue"]]);
+  const __default__ = {
     data() {
       return {
         realtime: null,
-        timer: null,
-        phoneHeight: 0,
-        phoneWidth: 0
+        timer: null
       };
-    },
-    onLoad() {
-      let self2 = this;
-      uni.getSystemInfo({
-        success(res) {
-          formatAppLog("log", "at pages/haotong/index.vue:55", res.screenHeight);
-          formatAppLog("log", "at pages/haotong/index.vue:56", res.windowWidth);
-          formatAppLog("log", "at pages/haotong/index.vue:57", res.windowHeight);
-          formatAppLog("log", "at pages/haotong/index.vue:58", res.screenWidth);
-          self2.phoneHeight = res.screenHeight * (750 / res.windowWidth);
-          self2.phoneWidth = res.screenWidth * (750 / res.windowWidth);
-        }
-      });
     },
     mounted() {
       this.timer = setInterval(() => {
@@ -3105,13 +3038,9 @@ This will fail in production.`);
       }
     }
   };
-  const _sfc_main$4 = /* @__PURE__ */ Object.assign(__default__$2, {
+  const _sfc_main$b = /* @__PURE__ */ Object.assign(__default__, {
     __name: "index",
     setup(__props) {
-      vue.useCssVars((_ctx) => ({
-        "81c56538-phoneHeight": _ctx.phoneHeight,
-        "81c56538-phoneWidth": _ctx.phoneWidth
-      }));
       const haotong = useHaoTongStore();
       const isshow = vue.ref(false);
       uni.getStorage({
@@ -3140,10 +3069,6 @@ This will fail in production.`);
       });
       return (_ctx, _cache) => {
         return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
-          vue.createElementVNode("image", {
-            class: "haotongimg",
-            src: "/static/haotongnewps.png"
-          }),
           vue.withDirectives(vue.createElementVNode("view", { class: "xyze" }, [
             vue.createElementVNode("view", null, [
               vue.createElementVNode("image", {
@@ -3162,58 +3087,103 @@ This will fail in production.`);
           ], 512), [
             [vue.vShow, isshow.value]
           ]),
-          vue.createElementVNode("view", {
-            class: "haotong",
-            style: vue.normalizeStyle({ "height": _ctx.phoneHeight + "rpx", "width": _ctx.phoneWidth + "rpx" })
+          vue.createElementVNode("scroll-view", {
+            "scroll-y": "true",
+            class: "scroll-Y"
           }, [
-            vue.createElementVNode("view", { class: "show1" }, [
-              vue.createElementVNode("view", { class: "left" }, [
-                vue.createElementVNode("text", { class: "name" }, vue.toDisplayString(vue.unref(haotong).name), 1),
-                vue.createElementVNode("text", { class: "card" }, vue.toDisplayString(vue.unref(haotong).card), 1)
+            vue.createElementVNode("view", { class: "haotong" }, [
+              vue.createElementVNode("image", {
+                class: "haotongimg",
+                src: "/static/haotonghtzps.png"
+              }),
+              vue.createElementVNode("view", {
+                class: "gotowx",
+                onClick: _cache[2] || (_cache[2] = ($event) => vue.unref(haotong).goto("../index/index"))
+              }, [
+                vue.createElementVNode("image", {
+                  class: "wximg",
+                  src: "/static/wx.png"
+                })
               ]),
-              vue.createElementVNode("view", { class: "right" }, [
-                vue.createElementVNode("text", { class: "realtime" }, vue.toDisplayString(_ctx.realtime), 1),
-                vue.createElementVNode("text", { class: "today" }, vue.toDisplayString(vue.unref(haotong).today), 1)
-              ])
+              vue.createElementVNode("view", {
+                class: "gotohe",
+                onClick: _cache[3] || (_cache[3] = ($event) => vue.unref(haotong).goto("../heinfo/index"))
+              }, [
+                vue.createElementVNode("image", {
+                  class: "heimg",
+                  src: "/static/he.png"
+                })
+              ]),
+              vue.createElementVNode("view", {
+                class: "gotohome",
+                onClick: _cache[4] || (_cache[4] = ($event) => vue.unref(haotong).goto("../component/index"))
+              }, [
+                vue.createElementVNode("image", {
+                  class: "homeimg",
+                  src: "/static/home.png"
+                })
+              ]),
+              vue.createElementVNode("view", { class: "show1" }, [
+                vue.createElementVNode("view", { class: "left" }, [
+                  vue.createElementVNode("text", { class: "name" }, vue.toDisplayString(vue.unref(haotong).name), 1),
+                  vue.createElementVNode("text", { class: "card" }, vue.toDisplayString(vue.unref(haotong).card), 1)
+                ]),
+                vue.createElementVNode("view", { class: "right" }, [
+                  vue.createElementVNode("text", { class: "realtime" }, vue.toDisplayString(_ctx.realtime), 1),
+                  vue.createElementVNode("text", { class: "today" }, vue.toDisplayString(vue.unref(haotong).today), 1)
+                ])
+              ]),
+              vue.createElementVNode("text", { class: "address" }, vue.toDisplayString(vue.unref(haotong).address), 1),
+              vue.createElementVNode("view", { class: "smtime" }, [
+                vue.createElementVNode("text", { class: "smtime1" }, "\u626B\u7801\u65F6\u95F4\uFF1A"),
+                vue.createElementVNode("text", { class: "smtime2" }, vue.toDisplayString(vue.unref(haotong).today), 1),
+                vue.createElementVNode("text", { class: "smtime3" }, vue.toDisplayString(vue.unref(haotong).smtime), 1)
+              ]),
+              vue.createElementVNode("view", { class: "show2" }, [
+                vue.createElementVNode("view", { class: "cytime" }, [
+                  vue.createElementVNode("text", { class: "cyday" }, vue.toDisplayString(vue.unref(haotong).cyday), 1),
+                  vue.createElementVNode("text", { class: "cytime" }, vue.toDisplayString(vue.unref(haotong).cytime), 1),
+                  vue.createElementVNode("text", { class: "hetime" }, vue.toDisplayString(vue.unref(haotong).items[vue.unref(haotong).current].time), 1)
+                ])
+              ]),
+              vue.createElementVNode("view", {
+                class: "htz",
+                onClick: _cache[5] || (_cache[5] = ($event) => vue.unref(haotong).goto("../htz/index"))
+              }),
+              vue.createElementVNode("view", {
+                class: "xcka",
+                onClick: _cache[6] || (_cache[6] = ($event) => isshow.value = true)
+              })
             ]),
-            vue.createElementVNode("text", { class: "address" }, vue.toDisplayString(vue.unref(haotong).address), 1),
-            vue.createElementVNode("navigator", {
-              class: "goto",
-              url: "../component/index",
-              "hover-class": "navigator-hover",
-              "open-type": "redirect"
-            }),
-            vue.createElementVNode("text", { class: "smtime" }, vue.toDisplayString(vue.unref(haotong).smtime), 1),
-            vue.createElementVNode("view", { class: "show2" }, [
-              vue.createElementVNode("text", { class: "hetime" }, vue.toDisplayString(vue.unref(haotong).items[vue.unref(haotong).current].time), 1),
-              vue.createElementVNode("text", { class: "cytime" }, vue.toDisplayString(vue.unref(haotong).cytime), 1)
-            ]),
-            vue.createElementVNode("text", {
-              class: "xcka",
-              onClick: _cache[2] || (_cache[2] = ($event) => isshow.value = true)
-            }, "\u70B9\u51FB\u67E5\u770B")
-          ], 4)
+            vue.createElementVNode("view", {
+              class: "sw2",
+              onClick: _cache[7] || (_cache[7] = ($event) => vue.unref(haotong).goto("../xpyi/index"))
+            }, [
+              vue.createElementVNode("image", {
+                class: "sw2img",
+                src: "/static/sw2.png"
+              })
+            ])
+          ])
         ], 64);
       };
     }
   });
-  var PagesHaotongIndex = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["__scopeId", "data-v-81c56538"], ["__file", "D:/kkmk/UniApp/haotongqr/pages/haotong/index.vue"]]);
-  const _sfc_main$3 = {
+  var PagesHaotongIndex = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["__scopeId", "data-v-81c56538"], ["__file", "D:/Program/UniApp/haotonghtz/pages/haotong/index.vue"]]);
+  const _sfc_main$a = {
     __name: "index",
     setup(__props) {
       const haotong = useHaoTongStore();
       const {
-        text,
         current,
         tztime,
         cytime
       } = storeToRefs(haotong);
-      setInterval(() => haotong.get_Hitokoto(), 2e4);
       const n = vue.ref(0);
       haotong.tztime = n;
       return (_ctx, _cache) => {
         return vue.openBlock(), vue.createElementBlock("view", { class: "uni-common-mt" }, [
-          vue.createElementVNode("view", { class: "uni-form-item uni-column title" }, vue.toDisplayString(vue.unref(text)), 1),
+          vue.createElementVNode("view", { class: "uni-form-item uni-column title h" }, "\u4E2A\u4EBA\u6838\u9178\u4FE1\u606F\u8F93\u5165"),
           vue.createElementVNode("view", { class: "uni-form-item uni-column" }, [
             vue.createElementVNode("view", { class: "title" }, "\u59D3\u540D:" + vue.toDisplayString(vue.unref(haotong).name), 1),
             vue.createElementVNode("input", {
@@ -3270,9 +3240,9 @@ This will fail in production.`);
             ], 32)
           ]),
           vue.createElementVNode("view", { class: "uni-form-item uni-column" }, [
-            vue.createElementVNode("view", { class: "title" }, vue.toDisplayString(vue.unref(haotong).cytime), 1),
+            vue.createElementVNode("view", { class: "title cy" }, "\u91C7\u6837\u65F6\u95F4\uFF1A" + vue.toDisplayString(vue.unref(haotong).cyday) + " " + vue.toDisplayString(vue.unref(haotong).cytime), 1),
             vue.createElementVNode("view", { class: "cytime" }, [
-              vue.createElementVNode("text", null, "\u91C7\u6837\u65F6\u95F4\u5FAE\u8C03:"),
+              vue.createTextVNode("\u91C7\u6837\u65F6\u95F4\u5FAE\u8C03:"),
               vue.createElementVNode("button", {
                 onClick: _cache[5] || (_cache[5] = ($event) => n.value++)
               }, "+"),
@@ -3303,89 +3273,293 @@ This will fail in production.`);
       };
     }
   };
-  var PagesComponentIndex = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["__scopeId", "data-v-189821d7"], ["__file", "D:/kkmk/UniApp/haotongqr/pages/component/index.vue"]]);
-  const __default__$1 = {
-    data() {
-      return {
-        phoneHeight: 0,
-        phoneWidth: 0
-      };
-    },
-    onLoad() {
-      let self2 = this;
-      uni.getSystemInfo({
-        success(res) {
-          formatAppLog("log", "at pages/xcka/index.vue:36", res.screenHeight);
-          formatAppLog("log", "at pages/xcka/index.vue:37", res.windowWidth);
-          formatAppLog("log", "at pages/xcka/index.vue:38", res.windowHeight);
-          formatAppLog("log", "at pages/xcka/index.vue:39", res.screenWidth);
-          self2.phoneHeight = res.screenHeight * (750 / res.windowWidth);
-          self2.phoneWidth = res.screenWidth * (750 / res.windowWidth);
-        }
-      });
-    }
-  };
-  const _sfc_main$2 = /* @__PURE__ */ Object.assign(__default__$1, {
+  var PagesComponentIndex = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["__scopeId", "data-v-189821d7"], ["__file", "D:/Program/UniApp/haotonghtz/pages/component/index.vue"]]);
+  const _sfc_main$9 = {
     __name: "index",
     setup(__props) {
-      vue.useCssVars((_ctx) => ({
-        "02b76406-phoneHeight": _ctx.phoneHeight,
-        "02b76406-phoneWidth": _ctx.phoneWidth
-      }));
       const haotong = useHaoTongStore();
       return (_ctx, _cache) => {
         return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
           vue.createElementVNode("image", { src: "/static/xckaps.png" }),
-          vue.createElementVNode("view", {
-            class: "xcka",
-            style: vue.normalizeStyle({ "height": _ctx.phoneHeight + "rpx", "width": _ctx.phoneWidth + "rpx" })
-          }, [
+          vue.createElementVNode("view", { class: "xcka" }, [
             vue.createElementVNode("view", { class: "xcphone" }, [
               vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(haotong).formatPhoneNumber), 1),
               vue.createElementVNode("text", { class: "phonetext" }, "\u7684\u52A8\u6001\u884C\u7A0B\u5361")
             ]),
             vue.createElementVNode("view", { class: "xctime" }, [
-              vue.createElementVNode("text", { class: "xcs" }, " \u66F4\u65B0\u4E8E: "),
+              vue.createElementVNode("text", { class: "xcs" }, " \u66F4\u65B0\u4E8E\uFF1A "),
               vue.createElementVNode("text", { class: "xct" }, vue.toDisplayString(vue.unref(haotong).xctime), 1)
             ]),
             vue.createElementVNode("image", {
               class: "xcicon",
               src: "/static/xcicon.png"
             })
-          ], 4)
+          ])
         ], 64);
       };
     }
-  });
-  var PagesXckaIndex = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["__scopeId", "data-v-02b76406"], ["__file", "D:/kkmk/UniApp/haotongqr/pages/xcka/index.vue"]]);
-  const __default__ = {
-    data() {
-      return {
-        phoneHeight: 0,
-        phoneWidth: 0
-      };
-    },
-    onLoad() {
-      let self2 = this;
-      uni.getSystemInfo({
-        success(res) {
-          formatAppLog("log", "at pages/iaxy/index.vue:26", res.screenHeight);
-          formatAppLog("log", "at pages/iaxy/index.vue:27", res.windowWidth);
-          formatAppLog("log", "at pages/iaxy/index.vue:28", res.windowHeight);
-          formatAppLog("log", "at pages/iaxy/index.vue:29", res.screenWidth);
-          self2.phoneHeight = res.screenHeight * (750 / res.windowWidth);
-          self2.phoneWidth = res.screenWidth * (750 / res.windowWidth);
-        }
-      });
-    }
   };
-  const _sfc_main$1 = /* @__PURE__ */ Object.assign(__default__, {
+  var PagesXckaIndex = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["__scopeId", "data-v-02b76406"], ["__file", "D:/Program/UniApp/haotonghtz/pages/xcka/index.vue"]]);
+  const _sfc_main$8 = {};
+  function _sfc_render$1(_ctx, _cache) {
+    return vue.openBlock(), vue.createElementBlock("image", { src: "/static/xpyi.png" });
+  }
+  var PagesXpyiIndex = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$1], ["__scopeId", "data-v-2e2843c4"], ["__file", "D:/Program/UniApp/haotonghtz/pages/xpyi/index.vue"]]);
+  const _sfc_main$7 = {
     __name: "index",
     setup(__props) {
-      vue.useCssVars((_ctx) => ({
-        "3f159895-phoneHeight": _ctx.phoneHeight,
-        "3f159895-phoneWidth": _ctx.phoneWidth
-      }));
+      const haotong = useHaoTongStore();
+      return (_ctx, _cache) => {
+        return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
+          vue.createElementVNode("image", { src: "/static/heinfo.png" }),
+          vue.createElementVNode("view", { class: "all" }, [
+            vue.createElementVNode("view", {
+              class: "heresult",
+              onClick: _cache[0] || (_cache[0] = ($event) => vue.unref(haotong).goto("../heresult/index"))
+            }),
+            vue.createElementVNode("view", {
+              class: "hecym",
+              onClick: _cache[1] || (_cache[1] = ($event) => vue.unref(haotong).goto("../cym/index"))
+            })
+          ])
+        ], 64);
+      };
+    }
+  };
+  var PagesHeinfoIndex = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["__scopeId", "data-v-ae478a32"], ["__file", "D:/Program/UniApp/haotonghtz/pages/heinfo/index.vue"]]);
+  const _sfc_main$6 = {};
+  function _sfc_render(_ctx, _cache) {
+    return vue.openBlock(), vue.createElementBlock("image", { src: "/static/htz.png" });
+  }
+  var PagesHtzIndex = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render], ["__scopeId", "data-v-ccfb6870"], ["__file", "D:/Program/UniApp/haotonghtz/pages/htz/index.vue"]]);
+  const _sfc_main$5 = {
+    __name: "index",
+    setup(__props) {
+      const haotong = useHaoTongStore();
+      return (_ctx, _cache) => {
+        return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
+          vue.createElementVNode("image", { src: "/static/hecym.png" }),
+          vue.createElementVNode("view", { class: "cym" }, [
+            vue.createElementVNode("text", { class: "cymtime" }, "\u66F4\u65B0\u4E8E\uFF1A" + vue.toDisplayString(vue.unref(haotong).cymtime), 1)
+          ])
+        ], 64);
+      };
+    }
+  };
+  var PagesCymIndex = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["__scopeId", "data-v-f0635b5e"], ["__file", "D:/Program/UniApp/haotonghtz/pages/cym/index.vue"]]);
+  const _sfc_main$4 = {
+    __name: "index",
+    setup(__props) {
+      const haotong = useHaoTongStore();
+      const day1 = dayjs().subtract(1, "day").format("YYYY-MM-DD");
+      const day2 = dayjs().subtract(2, "day").format("YYYY-MM-DD");
+      const day3 = dayjs().subtract(3, "day").format("YYYY-MM-DD");
+      const day4 = dayjs().subtract(4, "day").format("YYYY-MM-DD");
+      const day5 = dayjs().subtract(5, "day").format("YYYY-MM-DD");
+      const day6 = dayjs().subtract(6, "day").format("YYYY-MM-DD");
+      uni.getStorage({
+        key: "name",
+        success: function(res) {
+          haotong.name = res.data;
+        }
+      });
+      return (_ctx, _cache) => {
+        return vue.openBlock(), vue.createElementBlock("view", { class: "all" }, [
+          vue.createElementVNode("image", {
+            class: "heheader",
+            src: "/static/heheader.png"
+          }),
+          vue.createElementVNode("scroll-view", {
+            "scroll-y": "true",
+            class: "sw"
+          }, [
+            vue.createElementVNode("view", { class: "list" }, [
+              vue.createElementVNode("text", { class: "name1" }, vue.toDisplayString(vue.unref(haotong).name), 1),
+              vue.createElementVNode("view", { class: "cytime1" }, [
+                vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day1)), 1),
+                vue.createElementVNode("text", null, " 08:53:59")
+              ]),
+              vue.createElementVNode("view", { class: "jctime1" }, [
+                vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day1)), 1),
+                vue.createElementVNode("text", null, " 17:35:48")
+              ]),
+              vue.createElementVNode("view", {
+                class: "gotoz go1",
+                onClick: _cache[0] || (_cache[0] = ($event) => vue.unref(haotong).goto("../hereportz/index"))
+              }),
+              vue.createElementVNode("image", {
+                class: "imglist1",
+                src: "/static/helistz.png"
+              })
+            ]),
+            vue.createElementVNode("view", { class: "list" }, [
+              vue.createElementVNode("text", { class: "name2" }, vue.toDisplayString(vue.unref(haotong).name), 1),
+              vue.createElementVNode("view", { class: "cytime2" }, [
+                vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day2)), 1),
+                vue.createElementVNode("text", null, " 08:34:05")
+              ]),
+              vue.createElementVNode("view", { class: "jctime2" }, [
+                vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day2)), 1),
+                vue.createElementVNode("text", null, " 19:21:35")
+              ]),
+              vue.createElementVNode("view", {
+                class: "gotor go2",
+                onClick: _cache[1] || (_cache[1] = ($event) => vue.unref(haotong).goto("../hereportr/index"))
+              }),
+              vue.createElementVNode("image", {
+                class: "imglist",
+                src: "/static/helistr.png"
+              })
+            ]),
+            vue.createElementVNode("view", { class: "list" }, [
+              vue.createElementVNode("text", { class: "name2" }, vue.toDisplayString(vue.unref(haotong).name), 1),
+              vue.createElementVNode("view", { class: "cytime2" }, [
+                vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day3)), 1),
+                vue.createElementVNode("text", null, " 08:20:17")
+              ]),
+              vue.createElementVNode("view", { class: "jctime2" }, [
+                vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day3)), 1),
+                vue.createElementVNode("text", null, " 20:32:33")
+              ]),
+              vue.createElementVNode("view", {
+                class: "gotor go2",
+                onClick: _cache[2] || (_cache[2] = ($event) => vue.unref(haotong).goto("../hereportr/index"))
+              }),
+              vue.createElementVNode("image", {
+                class: "imglist",
+                src: "/static/helistr.png"
+              })
+            ]),
+            vue.createElementVNode("view", { class: "list" }, [
+              vue.createElementVNode("text", { class: "name2" }, vue.toDisplayString(vue.unref(haotong).name), 1),
+              vue.createElementVNode("view", { class: "cytime2" }, [
+                vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day4)), 1),
+                vue.createElementVNode("text", null, " 09:18:56")
+              ]),
+              vue.createElementVNode("view", { class: "jctime2" }, [
+                vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day4)), 1),
+                vue.createElementVNode("text", null, " 08:22:30")
+              ]),
+              vue.createElementVNode("view", {
+                class: "gotor go2",
+                onClick: _cache[3] || (_cache[3] = ($event) => vue.unref(haotong).goto("../hereportr/index"))
+              }),
+              vue.createElementVNode("image", {
+                class: "imglist",
+                src: "/static/helistr.png"
+              })
+            ]),
+            vue.createElementVNode("view", { class: "list" }, [
+              vue.createElementVNode("text", { class: "name2" }, vue.toDisplayString(vue.unref(haotong).name), 1),
+              vue.createElementVNode("view", { class: "cytime2" }, [
+                vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day5)), 1),
+                vue.createElementVNode("text", null, " 08:34:05")
+              ]),
+              vue.createElementVNode("view", { class: "jctime2" }, [
+                vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day5)), 1),
+                vue.createElementVNode("text", null, " 16:34:59")
+              ]),
+              vue.createElementVNode("view", {
+                class: "gotoz go2",
+                onClick: _cache[4] || (_cache[4] = ($event) => vue.unref(haotong).goto("../hereportz/index"))
+              }),
+              vue.createElementVNode("image", {
+                class: "imglist",
+                src: "/static/helistz.png"
+              })
+            ]),
+            vue.createElementVNode("view", { class: "list" }, [
+              vue.createElementVNode("text", { class: "name2" }, vue.toDisplayString(vue.unref(haotong).name), 1),
+              vue.createElementVNode("view", { class: "cytime2" }, [
+                vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day6)), 1),
+                vue.createElementVNode("text", null, " 09:02:07")
+              ]),
+              vue.createElementVNode("view", { class: "jctime2" }, [
+                vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day6)), 1),
+                vue.createElementVNode("text", null, " 19:44:23")
+              ]),
+              vue.createElementVNode("view", {
+                class: "gotor go2",
+                onClick: _cache[5] || (_cache[5] = ($event) => vue.unref(haotong).goto("../hereportr/index"))
+              }),
+              vue.createElementVNode("image", {
+                class: "imglist",
+                src: "/static/helistr.png"
+              })
+            ])
+          ]),
+          vue.createElementVNode("image", {
+            class: "hefoot",
+            src: "/static/hefoot.png"
+          })
+        ]);
+      };
+    }
+  };
+  var PagesHeresultIndex = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["__scopeId", "data-v-c6ae9fd4"], ["__file", "D:/Program/UniApp/haotonghtz/pages/heresult/index.vue"]]);
+  const _sfc_main$3 = {
+    __name: "index",
+    setup(__props) {
+      const day1 = dayjs().subtract(1, "day").format("YYYY-MM-DD");
+      const haotong = useHaoTongStore();
+      uni.getStorage({
+        key: "name",
+        success: function(res) {
+          haotong.name = res.data;
+        }
+      });
+      return (_ctx, _cache) => {
+        return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
+          vue.createElementVNode("image", { src: "/static/hereportz.png" }),
+          vue.createElementVNode("view", { class: "report" }, [
+            vue.createElementVNode("text", { class: "name" }, vue.toDisplayString(vue.unref(haotong).name), 1),
+            vue.createElementVNode("view", { class: "cytime" }, [
+              vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day1)), 1),
+              vue.createElementVNode("text", null, " 09:12:27")
+            ]),
+            vue.createElementVNode("view", { class: "jctime" }, [
+              vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day1)), 1),
+              vue.createElementVNode("text", null, " 19:30:48")
+            ])
+          ])
+        ], 64);
+      };
+    }
+  };
+  var PagesHereportzIndex = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["__scopeId", "data-v-552c9c03"], ["__file", "D:/Program/UniApp/haotonghtz/pages/hereportz/index.vue"]]);
+  const _sfc_main$2 = {
+    __name: "index",
+    setup(__props) {
+      const day1 = dayjs().subtract(1, "day").format("YYYY-MM-DD");
+      const haotong = useHaoTongStore();
+      uni.getStorage({
+        key: "name",
+        success: function(res) {
+          haotong.name = res.data;
+        }
+      });
+      return (_ctx, _cache) => {
+        return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
+          vue.createElementVNode("image", { src: "/static/hereportr.png" }),
+          vue.createElementVNode("view", { class: "report" }, [
+            vue.createElementVNode("text", { class: "name" }, vue.toDisplayString(vue.unref(haotong).name), 1),
+            vue.createElementVNode("view", { class: "cytime" }, [
+              vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day1)), 1),
+              vue.createElementVNode("text", null, " 08:53:59")
+            ]),
+            vue.createElementVNode("view", { class: "jctime" }, [
+              vue.createElementVNode("text", null, vue.toDisplayString(vue.unref(day1)), 1),
+              vue.createElementVNode("text", null, " 17:35:48")
+            ])
+          ])
+        ], 64);
+      };
+    }
+  };
+  var PagesHereportrIndex = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["__scopeId", "data-v-a3f1f40a"], ["__file", "D:/Program/UniApp/haotonghtz/pages/hereportr/index.vue"]]);
+  const _sfc_main$1 = {
+    __name: "index",
+    setup(__props) {
       const haotong = useHaoTongStore();
       const cxshow = vue.ref(false);
       return (_ctx, _cache) => {
@@ -3418,12 +3592,19 @@ This will fail in production.`);
         ], 64);
       };
     }
-  });
-  var PagesIaxyIndex = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-3f159895"], ["__file", "D:/kkmk/UniApp/haotongqr/pages/iaxy/index.vue"]]);
+  };
+  var PagesIaxyIndex = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-3f159895"], ["__file", "D:/Program/UniApp/haotonghtz/pages/iaxy/index.vue"]]);
   __definePage("pages/index/index", PagesIndexIndex);
   __definePage("pages/haotong/index", PagesHaotongIndex);
   __definePage("pages/component/index", PagesComponentIndex);
   __definePage("pages/xcka/index", PagesXckaIndex);
+  __definePage("pages/xpyi/index", PagesXpyiIndex);
+  __definePage("pages/heinfo/index", PagesHeinfoIndex);
+  __definePage("pages/htz/index", PagesHtzIndex);
+  __definePage("pages/cym/index", PagesCymIndex);
+  __definePage("pages/heresult/index", PagesHeresultIndex);
+  __definePage("pages/hereportz/index", PagesHereportzIndex);
+  __definePage("pages/hereportr/index", PagesHereportrIndex);
   __definePage("pages/iaxy/index", PagesIaxyIndex);
   const _sfc_main = {
     onLaunch: function() {
@@ -3441,7 +3622,7 @@ This will fail in production.`);
       formatAppLog("log", "at App.vue:19", "App Hide");
     }
   };
-  var App = /* @__PURE__ */ _export_sfc(_sfc_main, [["__file", "D:/kkmk/UniApp/haotongqr/App.vue"]]);
+  var App = /* @__PURE__ */ _export_sfc(_sfc_main, [["__file", "D:/Program/UniApp/haotonghtz/App.vue"]]);
   function createApp() {
     const app = vue.createVueApp(App);
     const pinia = createPinia();
@@ -3458,4 +3639,4 @@ This will fail in production.`);
   __app__._component.render = () => {
   };
   __app__.mount("#app");
-})(uni.VueShared, Vue);
+})(Vue);

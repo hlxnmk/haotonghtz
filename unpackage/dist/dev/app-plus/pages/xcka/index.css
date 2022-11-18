@@ -36,6 +36,8 @@ uni-text[data-v-02b76406] {
   font-family: my-fontm;
 }
 .xcka[data-v-02b76406] {
+  width: 23.4375rem;
+  height: 46.875rem;
   display: flex;
   flex-direction: column;
   justify-content: space-around;

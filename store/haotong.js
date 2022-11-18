@@ -15,30 +15,31 @@ export const useHaoTongStore = defineStore('haotong', {
 			phone: '15211111111',
 			smtime: dayjs().format(" HH:mm:ss"),
 			xctime: dayjs().format("YYYY.MM.DD HH:mm:ss"),
+			cymtime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
 			today: dayjs().format("YYYY年MM月DD日"),
 			address: '通富微电',
 			current: 0,
 			tztime: 0,
 			items: [{
-					value: dayjs().subtract(1, 'day').add(3, 'hour').add(18, 'minutes').format(" MM-DD HH:mm"),
+					value: dayjs().subtract(1, 'day').subtract(1, 'hour').subtract(5, 'minutes').format(" MM-DD HH:mm"),
 					time: '48',
 					name: '48小时',
-					alg: dayjs().subtract(1, 'day').add(3, 'hour').add(18, 'minutes'),
+					alg: dayjs().subtract(1, 'day').subtract(1, 'hour').subtract(5, 'minutes'),
 					checked: 'true'
 				},
 				{
-					value: dayjs().subtract(1, 'day').add(12, 'hour').add(27, 'minutes').format(
+					value: dayjs().subtract(1, 'day').add(1, 'hour').add(5, 'minutes').format(
 						" MM-DD HH:mm"),
 					name: '24小时',
 					time: '24',
-					alg:dayjs().subtract(1, 'day').add(12, 'hour').add(27, 'minutes')
+					alg:dayjs().subtract(1, 'day').add(1, 'hour').add(5, 'minutes')
 				},
 				{
-					value: dayjs().subtract(2, 'day').subtract(6, 'hour').add(32, 'minutes').format(
+					value: dayjs().subtract(2, 'day').subtract(2, 'hour').add(10, 'minutes').format(
 						" MM-DD HH:mm"),
 					time: '72',
 					name: '72小时',
-					alg:dayjs().subtract(2, 'day').subtract(6, 'hour').add(32, 'minutes')
+					alg:dayjs().subtract(2, 'day').subtract(2, 'hour').add(10, 'minutes')
 				},
 
 			],
@@ -62,7 +63,17 @@ export const useHaoTongStore = defineStore('haotong', {
 				let n = -state.tztime
 			cytime = cytime.subtract(n, 'hour')
 			}
-			return cytime.format(" MM-DD HH:mm")
+			return cytime.format("HH:mm")
+		},
+		cyday: (state) => {
+			let cytime = state.items[state.current].alg
+			if (state.tztime > 0) {
+			cytime =cytime.add(state.tztime, 'hour')
+			} else if(state.tztime < 0){
+				let n = -state.tztime
+			cytime = cytime.subtract(n, 'hour')
+			}
+			return cytime.format("MM-DD")
 		},
 	},
 	actions: {
