@@ -33,14 +33,19 @@
 			<text class="address"> {{haotong.address}}</text>
 			<view class="smtime"><text class="smtime1">扫码时间：</text><text class="smtime2"> {{haotong.today}}</text><text
 					class="smtime3"> {{haotong.smtime}}</text></view>
-
+              
 			<view class="show2">
-				<view class="cytime"><text class="cyday"> {{haotong.cyday}}</text><text class="cytime">
-						{{haotong.cytime}}</text><text class="hetime"> {{haotong.items[haotong.current].time}}</text>
-				</view>
-
+				<view v-if="cylv==haotong.cyday" >
+				<view class="cyleft"><text class="cydaylv"> {{haotong.cyday}}</text><text
+						class="cytimelv">{{haotong.cytime}}</text></view>
+						</view>
+				<view v-else >
+				<view class="cyleft"><text class="cyday"> {{haotong.cyday}}</text><text
+						class="cytime">{{haotong.cytime}}</text></view>
+						</view>
+				<view class="cyright"><text class="hetime"> {{haotong.items[haotong.current].time}}</text></view>
 			</view>
-			<view class="htz"  @click=" haotong.goto('../htz/index')"> </view>
+			<view class="htz" @click=" haotong.goto('../htz/index')"> </view>
 			<view class="xcka" @click="isshow=true"> </view>
 
 		</view>
@@ -88,6 +93,7 @@
 	} from 'vue'
 	const haotong = useHaoTongStore()
 	const isshow = ref(false)
+	const cylv= dayjs().format("MM-DD")
 
 	uni.getStorage({
 		key: 'name',
@@ -237,7 +243,7 @@
 		top: 769rpx;
 		width: 104rpx;
 		height: 104rpx;
-		
+
 
 	}
 
@@ -267,8 +273,6 @@
 		justify-content: space-around;
 		align-items: flex-start;
 		margin-top: 204rpx;
-
-
 	}
 
 	.left {
@@ -315,7 +319,7 @@
 		font-size: 32rpx;
 		letter-spacing: 1.5rpx;
 		color: #666666;
-		
+
 	}
 
 	.address {
@@ -348,21 +352,28 @@
 		margin-left: 3rpx;
 		letter-spacing: 1.3rpx;
 	}
-    
-	.show2{
+
+	.show2 {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+		align-items: center;
+		width: 750rpx;
 		height: 78rpx;
-		margin-top: -19rpx;
-		margin-left: -140rpx;
+		margin-top: -17rpx;
+	}
+    .cyleft{
+		margin-left: 0rpx;
 		
-	
-    }
-	.cyday{
+	}
+	.cyday {
 		font-size: 48rpx;
 		font-family: my-fontm;
 		font-weight: 600;
 		color: #000;
-		
+
 	}
+
 	.cytime {
 		font-family: my-fontm;
 		font-size: 48rpx;
@@ -370,17 +381,39 @@
 		color: #888888;
 		margin-left: 10rpx;
 	}
-
+	.cydaylv {
+		font-size: 48rpx;
+		font-family: my-fontm;
+		font-weight: 600;
+		color: #339D66;
+	
+	}
+	
+	.cytimelv {
+		font-family: my-fontm;
+		font-size: 48rpx;
+		font-weight: 600;
+		color: #339D66;
+		margin-left: 10rpx;
+	}
+     .cyright{
+		 height: 100rpx;
+		 width: 200rpx;
+		 // background-color: #666666;
+		 margin-top: 16rpx;
+			
+	}
 	.hetime {
 		font-family: my-fontm;
 		font-size: 50rpx;
 		color: #339D66;
-		font-weight: 600;
-		margin-left: 150rpx;
-		line-height:60rpx ;
+		font-weight: 600;	
+		padding-left:10rpx ;
+		
 	}
+	
 
-    .htz{
+	.htz {
 		width: 300rpx;
 		height: 120rpx;
 		// background-color: #586C96;
